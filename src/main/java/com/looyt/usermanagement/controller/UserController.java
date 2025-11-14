@@ -62,7 +62,7 @@ public class UserController
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     public BaseResponse<Void> deleteUserById(@PathVariable long id)
     {
         log.info(LOG_TEMPLATE, "DELETE", "/" + id);

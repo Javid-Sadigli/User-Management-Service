@@ -100,7 +100,7 @@ public class UserServiceImpl implements UserService
     
         return BaseResponse.<Void>builder()
             .message("User was deleted")
-            .status(HttpStatus.NO_CONTENT.value())
+            .status(HttpStatus.OK.value())
             .success(true)
             .build(); 
     }
