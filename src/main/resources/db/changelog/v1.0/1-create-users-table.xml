@@ -13,10 +13,10 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
 
-            <column name="user_role" type="VARCHAR(50)">
+            <column name="user_role" type="INT">
                 <constraints nullable="false"/>
             </column>
-
+            
             <column name="full_name" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
