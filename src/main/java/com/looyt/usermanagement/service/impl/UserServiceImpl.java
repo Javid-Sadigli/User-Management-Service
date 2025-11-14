@@ -25,9 +25,7 @@ public class UserServiceImpl implements UserService
     
     public BaseResponse<UserResponse> getUserById(long userId)
     {
-        UserEntity userEntity = userRepository.findById(userId)
-            .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
-
+        UserEntity userEntity = this.getUserEntityById(userId); 
         UserResponse userResponse = userMapper.entityToResponse(userEntity); 
 
         log.info("Found user: {}", userResponse);
@@ -38,5 +36,11 @@ public class UserServiceImpl implements UserService
             .success(true)
             .data(userResponse)
             .build(); 
+    }
+
+    private UserEntity getUserEntityById(long userId)
+    {
+        return userRepository.findById(userId)
+            .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
     }
 }
