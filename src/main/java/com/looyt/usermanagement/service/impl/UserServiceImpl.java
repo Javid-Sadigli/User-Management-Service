@@ -1,7 +1,13 @@
 package com.looyt.usermanagement.service.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import com.looyt.usermanagement.exception.UserNotFoundException;
 import com.looyt.usermanagement.mapper.UserMapper;
@@ -11,9 +17,6 @@ import com.looyt.usermanagement.model.entity.UserEntity;
 import com.looyt.usermanagement.repository.UserRepository;
 import com.looyt.usermanagement.service.UserService;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -21,7 +24,6 @@ public class UserServiceImpl implements UserService
 {
     private final UserRepository userRepository;  
     private final UserMapper userMapper; 
-    
     
     public BaseResponse<UserResponse> getUserById(long userId)
     {
@@ -35,6 +37,23 @@ public class UserServiceImpl implements UserService
             .status(HttpStatus.OK.value())
             .success(true)
             .data(userResponse)
+            .build(); 
+    }
+    
+    public BaseResponse<List<UserResponse>> getAllUsers()
+    {
+        List<UserEntity> userEntities = userRepository.findAll();
+
+        List<UserResponse> userResponses = userEntities.stream()
+            .map(userMapper::entityToResponse).collect(Collectors.toList());
+
+        log.info("Retrieved all users.");
+
+        return BaseResponse.<List<UserResponse>>builder()
+            .message("Retrieved all users")
+            .status(HttpStatus.OK.value())
+            .success(true)
+            .data(userResponses)
             .build(); 
     }
 

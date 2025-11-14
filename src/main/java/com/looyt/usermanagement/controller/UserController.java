@@ -1,5 +1,7 @@
 package com.looyt.usermanagement.controller;
 
+import java.util.List;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,5 +29,12 @@ public class UserController
     {
         log.info(LOG_TEMPLATE, "GET", "/" + id);
         return userService.getUserById(id); 
+    }
+
+    @GetMapping
+    public BaseResponse<List<UserResponse>> getAllUsers()
+    {
+        log.info(LOG_TEMPLATE, "GET", "");
+        return userService.getAllUsers(); 
     }
 }
