@@ -2,14 +2,19 @@ package com.looyt.usermanagement.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import com.looyt.usermanagement.model.dto.request.UserRequest;
 import com.looyt.usermanagement.model.dto.response.BaseResponse;
 import com.looyt.usermanagement.model.dto.response.UserResponse;
 import com.looyt.usermanagement.service.UserService;
@@ -36,5 +41,13 @@ public class UserController
     {
         log.info(LOG_TEMPLATE, "GET", "");
         return userService.getAllUsers(); 
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public BaseResponse<Void> createUser(@RequestBody UserRequest userRequest)
+    {
+        log.info(LOG_TEMPLATE, "POST", "");
+        return userService.createUser(userRequest); 
     }
 }

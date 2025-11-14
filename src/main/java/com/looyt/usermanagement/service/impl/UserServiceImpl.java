@@ -5,12 +5,14 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import com.looyt.usermanagement.exception.UserNotFoundException;
 import com.looyt.usermanagement.mapper.UserMapper;
+import com.looyt.usermanagement.model.dto.request.UserRequest;
 import com.looyt.usermanagement.model.dto.response.BaseResponse;
 import com.looyt.usermanagement.model.dto.response.UserResponse;
 import com.looyt.usermanagement.model.entity.UserEntity;
@@ -33,7 +35,7 @@ public class UserServiceImpl implements UserService
         log.info("Found user: {}", userResponse);
 
         return BaseResponse.<UserResponse>builder()
-            .message("User found with id: " + userId)
+            .message("User was found with id: " + userId)
             .status(HttpStatus.OK.value())
             .success(true)
             .data(userResponse)
@@ -57,9 +59,24 @@ public class UserServiceImpl implements UserService
             .build(); 
     }
 
+    @Transactional
+    public BaseResponse<Void> createUser(UserRequest userRequest)
+    {
+        UserEntity userEntity = userMapper.requestToEntity(userRequest); 
+        userEntity = userRepository.save(userEntity); 
+
+        log.info("Created new user: {}", userEntity);
+
+        return BaseResponse.<Void>builder()
+            .message("User was created")
+            .status(HttpStatus.CREATED.value())
+            .success(true)
+            .build(); 
+    }
+
     private UserEntity getUserEntityById(long userId)
     {
         return userRepository.findById(userId)
-            .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
+            .orElseThrow(() -> new UserNotFoundException("User was not found with id: " + userId));
     }
 }
