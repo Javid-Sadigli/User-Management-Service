@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService
         log.info("Found user: {}", userResponse);
 
         return BaseResponse.<UserResponse>builder()
-            .message("User was found with id: " + userId)
+            .message("User was found")
             .status(HttpStatus.OK.value())
             .success(true)
             .data(userResponse)
@@ -86,6 +86,21 @@ public class UserServiceImpl implements UserService
         return BaseResponse.<Void>builder()
             .message("User was updated")
             .status(HttpStatus.OK.value())
+            .success(true)
+            .build(); 
+    }
+
+    @Transactional
+    public BaseResponse<Void> deleteUserById(long userId)
+    {
+        UserEntity userEntity = this.getUserEntityById(userId); 
+        userRepository.delete(userEntity);
+
+        log.info("Deleted user with id: {}", userId);
+    
+        return BaseResponse.<Void>builder()
+            .message("User was deleted")
+            .status(HttpStatus.NO_CONTENT.value())
             .success(true)
             .build(); 
     }
