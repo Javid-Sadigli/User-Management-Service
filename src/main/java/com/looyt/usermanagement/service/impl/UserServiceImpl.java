@@ -73,6 +73,22 @@ public class UserServiceImpl implements UserService
             .success(true)
             .build(); 
     }
+    
+    @Transactional
+    public BaseResponse<Void> updateUser(long userId, UserRequest userRequest)
+    {
+        UserEntity userEntity = this.getUserEntityById(userId); 
+        userMapper.convertRequestToEntity(userRequest, userEntity);
+        userEntity = userRepository.save(userEntity); 
+
+        log.info("Updated user: {}", userEntity);
+
+        return BaseResponse.<Void>builder()
+            .message("User was updated")
+            .status(HttpStatus.OK.value())
+            .success(true)
+            .build(); 
+    }
 
     private UserEntity getUserEntityById(long userId)
     {

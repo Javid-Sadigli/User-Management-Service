@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -49,5 +50,13 @@ public class UserController
     {
         log.info(LOG_TEMPLATE, "POST", "");
         return userService.createUser(userRequest); 
+    }
+
+    @PutMapping("/{id}")
+    public BaseResponse<Void> updateUser(
+        @PathVariable long id, @RequestBody UserRequest userRequest)
+    {
+        log.info(LOG_TEMPLATE, "PUT", "/" + id);
+        return userService.updateUser(id, userRequest);
     }
 }
