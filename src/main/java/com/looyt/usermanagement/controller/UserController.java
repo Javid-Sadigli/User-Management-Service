@@ -54,7 +54,7 @@ public class UserController
     }
 
     @PutMapping("/{id}")
-    public BaseResponse<Void> updateUser(
+    public BaseResponse<UserResponse> updateUser(
         @PathVariable long id, @RequestBody UserRequest userRequest)
     {
         log.info(LOG_TEMPLATE, "PUT", "/" + id);

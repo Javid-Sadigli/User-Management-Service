@@ -11,6 +11,6 @@ public interface UserService
     public BaseResponse<UserResponse> getUserById(long userId); 
     public BaseResponse<List<UserResponse>> getAllUsers();
     public BaseResponse<Void> createUser(UserRequest userRequest);
-    public BaseResponse<Void> updateUser(long userId, UserRequest userRequest);
+    public BaseResponse<UserResponse> updateUser(long userId, UserRequest userRequest);
     public BaseResponse<Void> deleteUserById(long userId); 
 }
