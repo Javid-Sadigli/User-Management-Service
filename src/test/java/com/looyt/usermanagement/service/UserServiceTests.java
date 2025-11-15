@@ -21,6 +21,7 @@ import org.mapstruct.factory.Mappers;
 import com.looyt.usermanagement.enums.UserRole;
 import com.looyt.usermanagement.exception.UserNotFoundException;
 import com.looyt.usermanagement.mapper.UserMapper;
+import com.looyt.usermanagement.model.dto.request.UserRequest;
 import com.looyt.usermanagement.model.dto.response.BaseResponse;
 import com.looyt.usermanagement.model.dto.response.UserResponse;
 import com.looyt.usermanagement.model.entity.UserEntity;
@@ -120,6 +121,25 @@ public class UserServiceTests
     }
 
     @Test
+    public void givenCreateUser_ThenCreateUserAndReturnSuccessResponse()
+    {
+        UserRequest userRequest = this.getTestUserRequest1(); 
+        UserEntity userEntityWithoutId = this.getTestUserEntity1WithoutId(); 
+        UserEntity userEntity = this.getTestUserEntity1(); 
+
+        Mockito.when(userRepository.save(userEntityWithoutId)).thenReturn(userEntity);
+
+        BaseResponse<Void> serviceResponse = userService.createUser(userRequest); 
+
+        Mockito.verify(userRepository, Mockito.times(1)).save(userEntityWithoutId); 
+        Mockito.verifyNoMoreInteractions(userRepository);
+
+        Assertions.assertEquals(true, serviceResponse.isSuccess());
+        Assertions.assertEquals(201, serviceResponse.getStatus());
+        Assertions.assertNull(serviceResponse.getData());
+    }
+
+    @Test
     public void givenDeleteUserById_WhenUserIsFound_ThenDeleteItAndReturnSuccessResponse()
     {
         long id = 1L; 
@@ -151,6 +171,15 @@ public class UserServiceTests
         Mockito.verifyNoMoreInteractions(userRepository); 
     }
 
+    private UserRequest getTestUserRequest1()
+    {
+        return UserRequest.builder()
+            .email("example@mail.com")
+            .fullName("Test User")
+            .userRole(UserRole.EMPLOYEE)
+            .build();
+    }
+
     private UserEntity getTestUserEntity1()
     {
         return UserEntity.builder()
@@ -167,6 +196,14 @@ public class UserServiceTests
             .email("example2@mail.com")
             .fullName("Test User 2")
             .userRole(UserRole.MANAGER)
+            .build(); 
+    }
+    private UserEntity getTestUserEntity1WithoutId()
+    {
+        return UserEntity.builder()
+            .email("example@mail.com")
+            .fullName("Test User")
+            .userRole(UserRole.EMPLOYEE)
             .build(); 
     }
 
