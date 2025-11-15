@@ -3,6 +3,9 @@ package com.looyt.usermanagement.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,9 +45,12 @@ public class UserServiceImpl implements UserService
             .build(); 
     }
     
-    public BaseResponse<List<UserResponse>> getAllUsers()
+    public BaseResponse<List<UserResponse>> getAllUsers(int pageNumber, int pageSize)
     {
-        List<UserEntity> userEntities = userRepository.findAll();
+        Pageable pageable = PageRequest.of(pageNumber, pageSize); 
+        Page<UserEntity> userPage = userRepository.findAll(pageable); 
+
+        List<UserEntity> userEntities = userPage.getContent();
 
         List<UserResponse> userResponses = userEntities.stream()
             .map(userMapper::entityToResponse).collect(Collectors.toList());
