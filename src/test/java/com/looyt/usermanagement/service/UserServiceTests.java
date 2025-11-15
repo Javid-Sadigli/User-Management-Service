@@ -58,7 +58,7 @@ public class UserServiceTests
         Mockito.verifyNoMoreInteractions(userRepository);
 
         Assertions.assertEquals(200, serviceResponse.getStatus());
-        Assertions.assertEquals(true, serviceResponse.isSuccess());
+        Assertions.assertTrue(serviceResponse.isSuccess());
         Assertions.assertEquals(expectedUserResponse, serviceResponse.getData());
     }
 
@@ -94,7 +94,7 @@ public class UserServiceTests
         Mockito.verifyNoMoreInteractions(userRepository); 
 
         Assertions.assertEquals(200, serviceResponse.getStatus());
-        Assertions.assertEquals(true, serviceResponse.isSuccess());
+        Assertions.assertTrue(serviceResponse.isSuccess());
         Assertions.assertIterableEquals(expectedUserResponses, serviceResponse.getData());
     }
 
@@ -116,7 +116,7 @@ public class UserServiceTests
         Mockito.verifyNoMoreInteractions(userRepository); 
 
         Assertions.assertEquals(200, serviceResponse.getStatus());
-        Assertions.assertEquals(true, serviceResponse.isSuccess());
+        Assertions.assertTrue(serviceResponse.isSuccess());
         Assertions.assertEquals(List.of(), serviceResponse.getData());
     }
 
@@ -134,9 +134,46 @@ public class UserServiceTests
         Mockito.verify(userRepository, Mockito.times(1)).save(userEntityWithoutId); 
         Mockito.verifyNoMoreInteractions(userRepository);
 
-        Assertions.assertEquals(true, serviceResponse.isSuccess());
+        Assertions.assertTrue(serviceResponse.isSuccess());
         Assertions.assertEquals(201, serviceResponse.getStatus());
         Assertions.assertNull(serviceResponse.getData());
+    }
+
+    @Test
+    public void givenUpdateUser_WhenUserIsFound_ThenUpdateUserAndReturnSuccessResponse()
+    {
+        long id = 2L; 
+        UserRequest userRequest = this.getTestUserRequest1();
+        UserEntity foundUserEntity = this.getTestUserEntity2(); 
+        UserEntity updatedUserEntity = this.getTestUserEntity1WithDifferentId(); 
+        UserResponse expectedUserResponse = this.getTestUserResponse1WithDifferentId(); 
+
+        Mockito.when(userRepository.findById(id)).thenReturn(Optional.of(foundUserEntity)); 
+        Mockito.when(userRepository.save(updatedUserEntity)).thenReturn(updatedUserEntity); 
+
+        BaseResponse<UserResponse> serviceResponse = userService.updateUser(id, userRequest); 
+
+        Mockito.verify(userRepository, Mockito.times(1)).findById(id); 
+        Mockito.verify(userRepository, Mockito.times(1)).save(updatedUserEntity); 
+    
+        Assertions.assertEquals(200, serviceResponse.getStatus());
+        Assertions.assertTrue(serviceResponse.isSuccess());
+        Assertions.assertEquals(expectedUserResponse, serviceResponse.getData());
+    }
+
+
+    @Test
+    public void givenUpdateUser_WhenUserIsNotFound_ThenThrowUserNotFoundException()
+    {
+        long id = 1L; 
+        UserRequest userRequest = this.getTestUserRequest1(); 
+        Mockito.when(userRepository.findById(id)).thenReturn(Optional.empty());
+
+        Assertions.assertThrows(
+            UserNotFoundException.class, () -> userService.updateUser(id, userRequest));
+
+        Mockito.verify(userRepository, Mockito.times(1)).findById(1L); 
+        Mockito.verifyNoMoreInteractions(userRepository); 
     }
 
     @Test
@@ -154,7 +191,7 @@ public class UserServiceTests
         Mockito.verifyNoMoreInteractions(userRepository); 
 
         Assertions.assertEquals(200, serviceResponse.getStatus());
-        Assertions.assertEquals(true, serviceResponse.isSuccess());
+        Assertions.assertTrue(serviceResponse.isSuccess());
         Assertions.assertNull(serviceResponse.getData());
     }
 
@@ -207,6 +244,16 @@ public class UserServiceTests
             .build(); 
     }
 
+    private UserEntity getTestUserEntity1WithDifferentId()
+    {
+        return UserEntity.builder()
+            .id(2L)
+            .email("example@mail.com")
+            .fullName("Test User")
+            .userRole(UserRole.EMPLOYEE)
+            .build(); 
+    }
+
     private UserResponse getTestUserResponse1()
     {
         return UserResponse.builder()
@@ -224,6 +271,16 @@ public class UserServiceTests
             .email("example2@mail.com")
             .fullName("Test User 2")
             .userRole(UserRole.MANAGER)
+            .build(); 
+    }
+
+    private UserResponse getTestUserResponse1WithDifferentId()
+    {
+        return UserResponse.builder()
+            .id(2L)
+            .email("example@mail.com")
+            .fullName("Test User")
+            .userRole(UserRole.EMPLOYEE)
             .build(); 
     }
 
