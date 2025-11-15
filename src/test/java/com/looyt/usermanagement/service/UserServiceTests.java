@@ -97,6 +97,28 @@ public class UserServiceTests
         Assertions.assertIterableEquals(expectedUserResponses, serviceResponse.getData());
     }
 
+    @Test
+    public void givenGetAllUsers_WhenUsersNotFound_ThenReturnSuccessResponseWithEmptyList()
+    {
+        List<UserEntity> foundUserEntities = List.of(); 
+
+        int pageNumber = 0, pageSize = 1;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<UserEntity> foundUserPage = new PageImpl<>(foundUserEntities);
+
+        Mockito.when(userRepository.findAll(pageable)).thenReturn(foundUserPage); 
+
+        BaseResponse<List<UserResponse>> serviceResponse = userService
+            .getAllUsers(pageNumber, pageSize); 
+
+        Mockito.verify(userRepository, Mockito.times(1)).findAll(pageable); 
+        Mockito.verifyNoMoreInteractions(userRepository); 
+
+        Assertions.assertEquals(200, serviceResponse.getStatus());
+        Assertions.assertEquals(true, serviceResponse.isSuccess());
+        Assertions.assertEquals(List.of(), serviceResponse.getData());
+    }
+
     private UserEntity getTestUserEntity1()
     {
         return UserEntity.builder()
