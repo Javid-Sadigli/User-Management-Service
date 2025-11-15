@@ -12,6 +12,27 @@ services:
       - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U testuser"]
+      interval: 5s
+      retries: 5
+      timeout: 5s
+
+  app: 
+    image: user-management-service
+    container_name: application
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      DB_USER: testuser
+      DB_PASSWORD: testpassword
+      DB_URL: jdbc:postgresql://postgres-db:5432/user_db
+    depends_on:
+      postgres-db: 
+        condition: service_healthy
 
 volumes:
   postgres-data:
