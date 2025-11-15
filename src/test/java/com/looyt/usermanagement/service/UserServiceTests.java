@@ -119,6 +119,38 @@ public class UserServiceTests
         Assertions.assertEquals(List.of(), serviceResponse.getData());
     }
 
+    @Test
+    public void givenDeleteUserById_WhenUserIsFound_ThenDeleteItAndReturnSuccessResponse()
+    {
+        long id = 1L; 
+        UserEntity foundUserEntity = this.getTestUserEntity1(); 
+
+        Mockito.when(userRepository.findById(1L)).thenReturn(Optional.of(foundUserEntity)); 
+
+        BaseResponse<Void> serviceResponse = userService.deleteUserById(id); 
+
+        Mockito.verify(userRepository, Mockito.times(1)).findById(id);
+        Mockito.verify(userRepository, Mockito.times(1)).delete(foundUserEntity);
+        Mockito.verifyNoMoreInteractions(userRepository); 
+
+        Assertions.assertEquals(200, serviceResponse.getStatus());
+        Assertions.assertEquals(true, serviceResponse.isSuccess());
+        Assertions.assertNull(serviceResponse.getData());
+    }
+
+    @Test
+    public void givenDeleteUserById_WhenUserIsNotFound_ThenThrowUserNotFoundException()
+    {
+        long id = 1L; 
+        Mockito.when(userRepository.findById(id)).thenReturn(Optional.empty());
+
+        Assertions.assertThrows(
+            UserNotFoundException.class, () -> userService.deleteUserById(id));
+
+        Mockito.verify(userRepository, Mockito.times(1)).findById(1L); 
+        Mockito.verifyNoMoreInteractions(userRepository); 
+    }
+
     private UserEntity getTestUserEntity1()
     {
         return UserEntity.builder()
