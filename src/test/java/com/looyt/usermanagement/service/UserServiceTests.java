@@ -1,11 +1,17 @@
 package com.looyt.usermanagement.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -68,12 +74,45 @@ public class UserServiceTests
         Mockito.verifyNoMoreInteractions(userRepository); 
     }
 
+    @Test
+    public void givenGetAllUsers_WhenUsersFound_ThenReturnSuccessResponseWithUsers()
+    {
+        List<UserEntity> foundUserEntities = this.getTestUserEntities(); 
+        List<UserResponse> expectedUserResponses = this.getTestUserResponses(); 
+
+        int pageNumber = 0, pageSize = 2;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<UserEntity> foundUserPage = new PageImpl<>(foundUserEntities);
+
+        Mockito.when(userRepository.findAll(pageable)).thenReturn(foundUserPage); 
+
+        BaseResponse<List<UserResponse>> serviceResponse = userService
+            .getAllUsers(pageNumber, pageSize); 
+
+        Mockito.verify(userRepository, Mockito.times(1)).findAll(pageable); 
+        Mockito.verifyNoMoreInteractions(userRepository); 
+
+        Assertions.assertEquals(200, serviceResponse.getStatus());
+        Assertions.assertEquals(true, serviceResponse.isSuccess());
+        Assertions.assertIterableEquals(expectedUserResponses, serviceResponse.getData());
+    }
+
     private UserEntity getTestUserEntity1()
     {
         return UserEntity.builder()
             .id(1L)
             .email("example@mail.com")
-            .fullName("Test User").userRole(UserRole.EMPLOYEE)
+            .fullName("Test User")
+            .userRole(UserRole.EMPLOYEE)
+            .build(); 
+    }
+    private UserEntity getTestUserEntity2()
+    {
+        return UserEntity.builder()
+            .id(2L)
+            .email("example2@mail.com")
+            .fullName("Test User 2")
+            .userRole(UserRole.MANAGER)
             .build(); 
     }
 
@@ -82,7 +121,28 @@ public class UserServiceTests
         return UserResponse.builder()
             .id(1L)
             .email("example@mail.com")
-            .fullName("Test User").userRole(UserRole.EMPLOYEE)
+            .fullName("Test User")
+            .userRole(UserRole.EMPLOYEE)
             .build(); 
+    }
+
+    private UserResponse getTestUserResponse2()
+    {
+        return UserResponse.builder()
+            .id(2L)
+            .email("example2@mail.com")
+            .fullName("Test User 2")
+            .userRole(UserRole.MANAGER)
+            .build(); 
+    }
+
+    private List<UserEntity> getTestUserEntities() 
+    {
+        return List.of(getTestUserEntity1(), getTestUserEntity2());
+    }
+
+    private List<UserResponse> getTestUserResponses()
+    {
+        return List.of(getTestUserResponse1(), getTestUserResponse2()); 
     }
 }
