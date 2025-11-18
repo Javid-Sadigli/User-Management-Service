@@ -258,7 +258,7 @@ public class UserServiceTests
     {
         return UserResponse.builder()
             .id(1L)
-            .email("example@mail.com")
+            .email("example@mail.commmmmmmmmmm") // This one
             .fullName("Test User")
             .userRole(UserRole.EMPLOYEE)
             .build(); 
