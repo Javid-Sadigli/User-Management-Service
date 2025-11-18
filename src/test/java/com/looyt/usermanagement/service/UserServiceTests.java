@@ -13,10 +13,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import org.mapstruct.factory.Mappers;
+
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import org.mapstruct.factory.Mappers;
 
 import com.looyt.usermanagement.enums.UserRole;
 import com.looyt.usermanagement.exception.UserNotFoundException;
