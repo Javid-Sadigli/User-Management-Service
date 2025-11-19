@@ -67,7 +67,7 @@ All environment variables required for the database connection are configurable 
   `"string"`
 
 
-## Get All Users
+### Get All Users
 `GET /api/v1/user`
 
 **Query Parameters:**
@@ -95,7 +95,7 @@ All environment variables required for the database connection are configurable 
     }
   ```
 
-## Create User
+### Create User
 `POST /api/v1/user`
 
 **Request Body:**
@@ -126,7 +126,7 @@ All environment variables required for the database connection are configurable 
     }
   ```
 
-## Get User by ID
+### Get User by ID
 `GET /api/v1/user/{id}`
 
 **Path Parameters:**
@@ -160,7 +160,7 @@ All environment variables required for the database connection are configurable 
     }
     ```
 
-## Update User
+### Update User
 `PUT /api/v1/user/{id}`
 
 **Path Parameters:**
@@ -211,7 +211,7 @@ All environment variables required for the database connection are configurable 
     }
     ```
 
-## Delete User
+### Delete User
 `DELETE /api/v1/user/{id}`
 
 **Path Parameters:**
